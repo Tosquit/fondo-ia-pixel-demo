@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fondo IA · Oficina Pixel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  --chem:#39ff9e; --chem-dim:#178a55; --chem-dark:#05271a; --term:#020d08;
+  --neon-pink:#ff3fa4; --shimmer:#b14dff;
+  --brass:#c8a24a; --brass-d:#7d6227;
+  --zaun1:#0b1a17; --wall:#1a2a26; --wall-d:#101b18; --amber:#ffb640;
+  --down:#ff4d4d;
+  --bg:#050b0a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--chem);font-family:"VT323",monospace;font-size:20px;overflow-x:hidden}
+/* ---------- HUD ---------- */
+.hud{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;padding:8px 16px;
+  background:linear-gradient(#141a10,#0a0f08);border-bottom:3px solid var(--brass-d);box-shadow:0 0 18px #c8a24a33}
+.hud h1{font-family:"Press Start 2P";font-size:13px;margin:0 14px 0 0;color:var(--brass);text-shadow:0 0 8px #c8a24a88}
+.hud h1 em{font-style:normal;color:var(--chem);text-shadow:0 0 8px var(--chem)}
+.res{display:flex;align-items:center;gap:6px;padding:2px 10px;border:2px solid var(--brass-d);background:#0d1209;color:#e8dcb4}
+.res b{font-weight:normal;color:#fff3cf}
+.bar{width:90px;height:10px;border:1px solid var(--brass-d);background:#060a04;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--chem);box-shadow:0 0 6px var(--chem)}
+.bar.warn i{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.bar.down i{background:var(--down);box-shadow:0 0 6px var(--down)}
+.bar.pink i{background:var(--neon-pink);box-shadow:0 0 6px var(--neon-pink)}
+.spacer{flex:1}
+.blink{animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+/* ---------- LAYOUT ---------- */
+.wrap{display:grid;grid-template-columns:1fr 380px;min-height:calc(100vh - 52px)}
+.city{position:relative;padding-bottom:30px;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 30% 75%,#39ff9e14,transparent 45%),
+    radial-gradient(ellipse at 80% 55%,#b14dff14,transparent 40%),
+    linear-gradient(#10221d,var(--zaun1) 40%,#060f0d)}
+/* fog */
+.fog{position:absolute;left:-20%;right:-20%;height:120px;pointer-events:none;
+  background:radial-gradient(ellipse at center,#39ff9e22,transparent 65%);animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+/* Piltover (superficie) */
+.piltover{height:150px;position:relative;background:linear-gradient(#7fb6e6,#cfe3f2 60%,#f1e6c8);border-bottom:6px solid var(--brass-d)}
+.tower{position:absolute;bottom:0;background:linear-gradient(90deg,#efe6cf,#d9c79a);border:2px solid #b49a5c}
+.tower:before{content:"";position:absolute;top:-16px;left:50%;transform:translateX(-50%);border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:16px solid var(--brass)}
+.tower i{position:absolute;left:25%;right:25%;height:6px;background:#5aa0d8;box-shadow:0 0 6px #9fd3ff}
+.hexgate{position:absolute;right:60px;bottom:6px;width:110px;height:110px;border-radius:50%;
+  border:8px solid var(--brass);box-shadow:inset 0 0 0 6px #e8d18a,0 0 24px #5fd0ff88;
+  background:radial-gradient(circle,#9be8ff 0 20%,#3aa9e0 40%,transparent 62%);animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.plabel{position:absolute;left:14px;top:10px;font-family:"Press Start 2P";font-size:11px;color:#6b5420;text-shadow:1px 1px 0 #fff8}
+/* Pipes between layers */
+.pipes{height:26px;background:
+   repeating-linear-gradient(90deg,transparent 0 80px,#5a4a24 80px 92px,transparent 92px 200px),
+   linear-gradient(#3d3a2a,#2a271c);border-bottom:2px solid #0008}
+.zlabel{position:absolute;left:172px;top:190px;font-family:"Press Start 2P";font-size:11px;color:var(--chem);text-shadow:0 0 8px var(--chem)}
+/* lift shaft */
+.shaft{position:absolute;left:30px;top:176px;bottom:30px;width:120px;border-left:4px solid #3a3424;border-right:4px solid #3a3424;
+  background:repeating-linear-gradient(#0c1513 0 18px,#132320 18px 20px)}
+.shaft .cab{position:absolute;left:8px;right:8px;height:70px;border:3px solid var(--brass-d);
+  background:linear-gradient(#2a3a2c,#16231c);box-shadow:0 0 14px #39ff9e44;animation:lift 12s ease-in-out infinite}
+.shaft .cab:after{content:"⇅";position:absolute;inset:0;display:grid;place-items:center;color:var(--chem);font-size:26px}
+@keyframes lift{0%,8%{top:20px}45%,55%{top:calc(100% - 100px)}92%,100%{top:20px}}
+.shaft .cable{position:absolute;left:50%;top:0;bottom:0;width:2px;background:#5a5a48}
+/* chart area */
+.chart-wrap{position:relative;margin:24px 22px 10px 170px;padding:10px;border:3px solid var(--brass-d);
+  background:linear-gradient(#0c1513,#06100d);box-shadow:inset 0 0 30px #39ff9e0a}
+.chart-title{position:absolute;left:8px;top:-13px;font-family:"Press Start 2P";font-size:9px;background:var(--bg);padding:0 6px;color:var(--brass);z-index:2}
+.chart{position:relative;height:120px;width:100%}
+.chart svg{width:100%;height:100%;display:block}
+.chart .value{position:absolute;right:8px;bottom:4px;font-size:22px;color:var(--chem);text-shadow:0 0 8px var(--chem);background:rgba(5,11,10,.7);padding:0 6px}
+.chart .value.down{color:var(--down);text-shadow:0 0 8px var(--down)}
+/* floors */
+.floors{position:relative;margin-left:170px;margin-right:22px;padding-top:10px}
+.floor{display:flex;gap:6px;margin-bottom:10px;position:relative}
+.floor .lbl{position:absolute;left:-30px;top:44px;writing-mode:vertical-rl;transform:rotate(180deg);font-size:15px;color:#6fae93}
+.room{position:relative;height:124px;flex:1;cursor:pointer;overflow:hidden;
+  background:
+    repeating-linear-gradient(90deg,#ffffff05 0 2px,transparent 2px 26px),
+    linear-gradient(var(--wall),var(--wall-d));
+  border:4px solid #2e3a2a;border-top:8px solid #3d3a2a;box-shadow:inset 0 -14px 0 #0b1210;transition:filter .15s}
+.room:hover{filter:brightness(1.2)}
+.room.sel{outline:3px solid var(--chem);box-shadow:0 0 18px #39ff9e88,inset 0 -14px 0 #0b1210}
+.room .name{position:absolute;top:5px;left:8px;font-family:"Press Start 2P";font-size:8px;letter-spacing:.5px;color:var(--c,#39ff9e);text-shadow:0 0 6px var(--c,#39ff9e),0 0 12px var(--c,#39ff9e)}
+.room .glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,var(--g,#39ff9e22),transparent 70%)}
+.room.off .glow{opacity:.2}
+.room.alert .glow{background:radial-gradient(ellipse at 50% 0%,var(--down)55,transparent 70%);animation:blink 1s steps(2) infinite}
+.room .pipe{position:absolute;top:22px;left:0;right:0;height:5px;background:#4a4128;box-shadow:0 2px 0 #0006}
+.room .desk{position:absolute;bottom:14px;width:48px;height:16px;background:#4a3524;border-top:3px solid #6e5236}
+.room .screen{position:absolute;bottom:30px;width:24px;height:17px;background:#062;border:2px solid #111}
+.room.work .screen,.room.alert .screen{background:var(--c,#39ff9e);box-shadow:0 0 12px var(--c,#39ff9e)}
+.room .graffiti{position:absolute;font-family:"Press Start 2P";font-size:9px;transform:rotate(-8deg);opacity:.75}
+.room .shelf{position:absolute;top:34px;width:52px;height:30px;background:repeating-linear-gradient(90deg,#7a4a2a 0 6px,#3a6a5a 6px 11px,#8a7a3a 11px 15px);border-bottom:3px solid #4a3220}
+.room .flask{position:absolute;bottom:32px;width:8px;height:14px;border-radius:0 0 4px 4px;background:var(--shimmer);box-shadow:0 0 8px var(--shimmer)}
+/* sprites */
+.dw{position:absolute;bottom:12px;width:40px;height:56px;image-rendering:pixelated}
+.dw.walk{animation:walk var(--t,7s) linear infinite alternate}
+@keyframes walk{from{left:var(--a,10%)}to{left:var(--b,70%)}}
+.dw.sit{animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-2px)}}
+.bub{position:absolute;bottom:74px;padding:2px 6px;background:#0c1512;color:var(--chem);font-size:15px;white-space:nowrap;border:2px solid var(--chem-dim);box-shadow:0 0 8px #39ff9e44}
+.bub.pink{color:var(--neon-pink);border-color:#a3266b}
+.bub.zz{background:none;border:none;box-shadow:none;color:#bfe;font-family:"Press Start 2P";font-size:9px}
+/* hexcore */
+.core{height:164px;flex:1;position:relative;cursor:pointer;border:4px solid #3d3a2a;border-top:8px solid var(--brass-d);
+  background:radial-gradient(ellipse at center,#1d0f33,#0a0716 60%,#05040b);box-shadow:0 0 30px #b14dff55,inset 0 0 50px #b14dff33}
+.core .name{position:absolute;top:6px;left:8px;font-family:"Press Start 2P";font-size:9px;color:#d9b3ff;text-shadow:0 0 8px var(--shimmer)}
+.hexcore{position:absolute;left:50%;top:50%;width:140px;height:140px;transform:translate(-50%,-50%)}
+.hexcore .ring{position:absolute;inset:0;border:3px dashed #b14dff88;border-radius:50%;animation:spin 10s linear infinite}
+.hexcore .ring.r2{inset:14px;border-style:dotted;border-color:#39ff9e66;animation-duration:7s;animation-direction:reverse}
+.owl{position:absolute;left:50%;top:50%;width:84px;height:84px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 10px var(--chem))}
+.owl .eye{animation:wink 4s steps(1) infinite}
+@keyframes wink{0%,92%{opacity:1}93%,97%{opacity:0}}
+.core .bub{bottom:auto;top:30px;left:calc(50% + 80px)}
+/* ---------- TERMINAL ---------- */
+.term{position:relative;background:var(--term);border-left:8px solid var(--brass-d);padding:18px 18px 24px;box-shadow:inset 0 0 60px #39ff9e1a;overflow:hidden}
+.term:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(#ffffff08 0 1px,transparent 1px 3px)}
+.term:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,#000b)}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--chem-dim);margin-bottom:12px}
+.tabs span{padding:2px 10px;font-family:"Press Start 2P";font-size:9px;color:var(--chem-dim);cursor:pointer}
+.tabs span.on{color:var(--chem);border:2px solid var(--chem-dim);border-bottom:2px solid var(--term);margin-bottom:-2px;text-shadow:0 0 6px var(--chem)}
+.portrait{float:right;width:84px;height:118px;margin:0 0 6px 10px;border:2px solid var(--chem-dim);background:#06140e;image-rendering:pixelated;padding:6px}
+.term h2{font-family:"Press Start 2P";font-size:13px;margin:6px 0 2px;text-shadow:0 0 8px var(--chem)}
+.term .alias{color:var(--neon-pink);font-size:18px;margin-bottom:6px}
+.term .role{color:#9fe9c4;margin-bottom:10px}
+.stat{display:flex;justify-content:space-between;border-bottom:1px dashed var(--chem-dark);padding:3px 0;clear:both}
+.stat b{font-weight:normal;color:#dcffee}
+.term ul{list-style:none;padding:0;margin:8px 0}
+.term li:before{content:"▸ ";color:var(--chem-dim)}
+.btn{display:block;width:100%;text-align:left;margin:6px 0;padding:6px 10px;background:transparent;color:var(--chem);border:2px solid var(--chem-dim);font-family:"VT323";font-size:20px;cursor:pointer}
+.btn:hover{background:var(--chem);color:var(--term);box-shadow:0 0 12px var(--chem)}
+.btn.warn{border-color:#8f6a1d;color:var(--amber)}
+.btn.warn:hover{background:var(--amber);color:#1a1000}
+.log{margin-top:14px;font-size:17px;color:#7fd6a8}
+.note{position:fixed;right:12px;bottom:8px;font-size:15px;color:#8fb8a5;opacity:.8}
+/* accessibility */
+@media (prefers-reduced-motion: reduce){
+  .blink,.fog,.hexgate,.ring,.cab,.dw,.owl .eye{animation:none !important}
+  .room,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <h1>FONDO <em>IA</em></h1>
+  <div class="res">⚗ Cuota LLM <div class="bar warn"><i style="width:62%"></i></div><b>62%</b></div>
+  <div class="res">$ Gasto mes <div class="bar"><i style="width:18%"></i></div><b>$18 / $100</b></div>
+  <div class="res">☐ Posiciones <b>4 abiertas</b></div>
+  <div class="res">📈 P&L día <b style="color:var(--chem)">+2.4%</b></div>
+  <div class="spacer"></div>
+  <div class="res"><span class="blink" style="color:var(--chem)">●</span> Motor <b>OK</b></div>
+</div>
+
+<div class="wrap">
+  <div class="city">
+    <div class="piltover">
+      <div class="plabel">PILTOVER · CIUDAD DEL PROGRESO</div>
+      <div class="tower" style="left:22%;width:46px;height:96px"><i style="top:20px"></i><i style="top:46px"></i></div>
+      <div class="tower" style="left:31%;width:34px;height:70px"><i style="top:18px"></i></div>
+      <div class="tower" style="left:44%;width:58px;height:118px"><i style="top:22px"></i><i style="top:52px"></i><i style="top:82px"></i></div>
+      <div class="tower" style="left:57%;width:38px;height:84px"><i style="top:24px"></i></div>
+      <div class="hexgate"></div>
+    </div>
+    <div class="pipes"></div>
+    <div class="zlabel">ZAUN</div>
+    <div class="fog" style="top:300px"></div><div class="fog" style="top:560px;animation-duration:24s"></div>
+    <div class="shaft"><div class="cable"></div><div class="cab"></div></div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">PORTFOLIO · 24H</div>
+      <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="floors" id="floors"></div>
+  </div>
+  <aside class="term" id="term"></aside>
+</div>
+<div class="note">Demo · datos simulados · fondo IA pixel-art</div>
+
+<script>
+/* ---------- sprites 10x14 ---------- */
+const SK = { light: "#f0c9a0", mid: "#d9a77c", dark: "#8a5a3a", yordle: "#e8c27a" };
+function sprite(o) {
+  const g = Array.from({ length: 14 }, () => Array(10).fill(null));
+  const set = (x, y, c) => { if (x >= 0 && x < 10 && y >= 0 && y < 14) g[y][x] = c; };
+  const rect = (x0, y0, x1, y1, c) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, c); };
+  const skin = o.skin || SK.light;
+  rect(2, 2, 7, 5, skin);
+  set(3, 3, o.eye || "#111"); set(6, 3, o.eye2 || o.eye || "#111");
+  rect(4, 6, 5, 6, skin);
+  rect(2, 6, 7, 9, o.top); rect(1, 7, 1, 9, o.top); rect(8, 7, 8, 9, o.top);
+  set(1, 10, skin); set(8, 10, skin);
+  rect(3, 10, 6, 11, o.bottom || "#2a2a3a");
+  rect(3, 12, 3, 12, o.bottom || "#2a2a3a"); rect(6, 12, 6, 12, o.bottom || "#2a2a3a");
+  rect(2, 13, 3, 13, o.boots || "#1a120c"); rect(6, 13, 7, 13, o.boots || "#1a120c");
+  if (o.accent) { rect(4, 7, 5, 9, o.accent); }
+  const h = o.hair;
+  switch (o.style) {
+    case "braids": rect(2, 0, 7, 0, h); rect(1, 1, 8, 1, h); set(1, 2, h); set(8, 2, h);
+      for (let y = 3; y <= 12; y++) { set(0, y, h); set(9, y, h); } break;
+    case "short": rect(2, 0, 7, 0, h); rect(1, 1, 8, 1, h); set(1, 2, h); set(8, 2, h); break;
+    case "undercut": rect(2, 0, 7, 0, h); rect(2, 1, 8, 1, h); set(8, 2, h); set(8, 3, h); break;
+    case "spiky": [1, 3, 5, 7].forEach(x => set(x + 1, 0, h)); rect(1, 1, 8, 1, h); break;
+    case "hat": rect(2, 0, 7, 0, o.hat); rect(0, 1, 9, 1, o.hat);
+      for (let y = 2; y <= 8; y++) { set(1, y, h); set(8, y, h); } break;
+    case "slick": rect(2, 0, 7, 0, h); rect(1, 1, 7, 1, h); set(1, 2, h); break;
+    case "beard": rect(3, 0, 6, 0, h); rect(2, 1, 7, 1, h); rect(2, 5, 7, 5, h); set(2, 4, h); set(7, 4, h); break;
+    case "yordle": rect(1, 0, 8, 0, h); rect(0, 1, 9, 2, h); set(0, 3, h); set(9, 3, h); rect(3, 5, 6, 5, h); break;
+    case "back": rect(2, 0, 7, 0, h); rect(1, 1, 8, 1, h); set(1, 2, h); set(1, 3, h); set(8, 2, h); break;
+  }
+  if (o.gauntlets) { rect(0, 7, 1, 10, "#7d8a96"); rect(8, 7, 9, 10, "#7d8a96"); set(0, 8, "#ff3fa4"); set(9, 8, "#ff3fa4"); }
+  if (o.cane) { for (let y = 7; y <= 13; y++) set(9, y, "#6e5236"); set(9, 6, "#c8a24a"); }
+  if (o.hammer) { for (let y = 6; y <= 12; y++) set(9, y, "#8a7a5a"); rect(8, 4, 9, 6, "#c8a24a"); set(8, 5, "#5fd0ff"); }
+  if (o.scar) set(6, 3, "#ff3030");
+  let out = "";
+  g.forEach((row, y) => row.forEach((c, x) => { if (c) out += `<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`; }));
+  return `<svg viewBox="0 0 10 14" shape-rendering="crispEdges" width="100%" height="100%">${out}</svg>`;
+}
+function owl() {
+  const g = "#39ff9e", d = "#0d4a2a";
+  return `<svg class="owl" viewBox="0 0 24 24" shape-rendering="crispEdges">
+    <rect x="5" y="3" width="2" height="3" fill="${g}"/><rect x="17" y="3" width="2" height="3" fill="${g}"/>
+    <rect x="4" y="5" width="16" height="15" fill="${g}"/>
+    <rect x="6" y="7" width="5" height="5" fill="${d}"/><rect x="13" y="7" width="5" height="5" fill="${d}"/>
+    <g class="eye"><rect x="8" y="9" width="2" height="2" fill="${g}"/><rect x="15" y="9" width="2" height="2" fill="${g}"/></g>
+    <rect x="11" y="12" width="2" height="2" fill="${d}"/>
+    <rect x="3" y="11" width="2" height="7" fill="${g}"/><rect x="19" y="11" width="2" height="7" fill="${g}"/>
+    <rect x="8" y="20" width="2" height="2" fill="${g}"/><rect x="14" y="20" width="2" height="2" fill="${g}"/></svg>`;
+}
+
+/* ---------- portfolio data ---------- */
+const PORTFOLIO = [
+  {t:"09:00",v:100},{t:"10:00",v:102},{t:"11:00",v:101},{t:"12:00",v:104},{t:"13:00",v:103},
+  {t:"14:00",v:106},{t:"15:00",v:105},{t:"16:00",v:108},{t:"17:00",v:107},{t:"18:00",v:110},
+  {t:"19:00",v:112},{t:"20:00",v:111},{t:"21:00",v:114},{t:"22:00",v:116},{t:"23:00",v:115},
+  {t:"00:00",v:118},{t:"01:00",v:117},{t:"02:00",v:120},{t:"03:00",v:119},{t:"04:00",v:121},
+  {t:"05:00",v:124},{t:"06:00",v:122},{t:"07:00",v:125},{t:"08:00",v:124}
+];
+function renderChart() {
+  const W = 800, H = 140, PAD = 8;
+  const values = PORTFOLIO.map(p => p.v);
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = max - min || 1;
+  const n = values.length;
+  const step = (W - PAD * 2) / (n - 1);
+  let pts = "";
+  values.forEach((v, i) => {
+    const x = PAD + i * step;
+    const y = H - PAD - ((v - min) / range) * (H - PAD * 2);
+    pts += `<rect x="${Math.round(x)}" y="${Math.round(y)}" width="3" height="${Math.round(H - PAD - y)}" fill="var(--chem)" shape-rendering="crispEdges"/>`;
+  });
+  // grid
+  let grid = "";
+  for (let i = 1; i < 5; i++) {
+    const y = PAD + (i * (H - PAD * 2) / 5);
+    grid += `<line x1="${PAD}" y1="${Math.round(y)}" x2="${W - PAD}" y2="${Math.round(y)}" stroke="var(--chem-dark)" stroke-dasharray="4 4"/>`;
+  }
+  const first = values[0], last = values[values.length - 1];
+  const pct = (((last - first) / first) * 100).toFixed(1);
+  const cls = last >= first ? "" : "down";
+  document.getElementById("chart").innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      ${grid}
+      <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--chem)" stop-opacity="0.25"/><stop offset="100%" stop-color="var(--chem)" stop-opacity="0"/></linearGradient></defs>
+      <path d="M${PAD},${H - PAD} ${values.map((v, i) => `${PAD + i * step},${H - PAD - ((v - min) / range) * (H - PAD * 2)}`).join(" ")} ${W - PAD},${H - PAD} Z" fill="url(#area)"/>
+      ${pts}
+    </svg>
+    <div class="value ${cls}">${last >= first ? "+" : ""}${pct}%</div>`;
+}
+
+/* ---------- trading team ---------- */
+const P = {
+  risk:     { who: "Vander", agent: "Gestión de riesgo", room: "RISK · ULTIMA GOTA", c: "#ffb640", role: "Stops, tamaño de posición y máximo drawdown. Solo lectura de riesgo.", state: "idle",
+             look: { style: "beard", hair: "#5a3a22", skin: SK.mid, top: "#5a4a3a", bottom: "#2a221a" } },
+  signals:  { who: "Caitlyn", agent: "Scouting de señales", room: "SEÑALES PILTOVER", c: "#5fd0ff", role: "Escanea mercados y noticias. Marca oportunidades con confianza.", state: "work", bubble: "BTC +4%",
+             look: { style: "hat", hair: "#1c1a2e", hat: "#3a5f9a", top: "#3a5f9a", bottom: "#2a2a44", accent: "#e8d18a" } },
+  director: { who: "Ekko", agent: "Director de cartera", room: "FONDO FIREFLIGHT", c: "#39ff9e", role: "Orquesta allocation y revisión de sesgo del modelo.", state: "work", bubble: "rebalanceo",
+             look: { style: "spiky", hair: "#f2f2f2", skin: SK.dark, top: "#2f6f5f", bottom: "#3a2a1a", accent: "#e8b84a" } },
+  auditor:  { who: "Heimerdinger", agent: "Auditor de modelos", room: "LAB. MODELOS", c: "#e8d18a", role: "Revisa backtests y overfitting. No ejecuta.", state: "walk",
+             look: { style: "yordle", hair: "#f4f4f4", skin: SK.yordle, top: "#3a5f9a", bottom: "#2a2a44" } },
+  exec:     { who: "Jayce", agent: "Ejecución de órdenes", room: "EJECUCIÓN", c: "#5fd0ff", role: "Envía órdenes al broker y confirma fills.", state: "work", bubble: "fill OK",
+             look: { style: "back", hair: "#4a2e1a", skin: SK.light, top: "#e8e0cc", bottom: "#4a3a2a", accent: "#c8a24a", hammer: true } },
+  tester:   { who: "Jinx", agent: "Tester de estrategias", room: "ESTRATEGIAS", c: "#ff3fa4", role: "Rompe estrategias en paper trading antes de producción.", state: "walk",
+             look: { style: "braids", hair: "#3a7bff", skin: "#f3d6c2", eye: "#ff3fa4", top: "#3a1a3a", bottom: "#5a2a6a", accent: "#ff3fa4" } },
+  safety:   { who: "Vi", agent: "Safety reviewer", room: "PUESTO DE SEGURIDAD", c: "var(--down)", role: "Bloquea operaciones con riesgo no permitido o secretos expuestos.", state: "alert", bubble: "¡stop!",
+             look: { style: "undercut", hair: "#ff5fa8", skin: SK.light, top: "#8a2a2a", bottom: "#2a2a3a", gauntlets: true } },
+  guardian: { who: "Silco", agent: "Guardián identidad", room: "DESPACHO SILCO", c: "#b14dff", role: "Garantiza que el fondo preserve su SOUL.md. Solo lee.", state: "sleep",
+             look: { style: "slick", hair: "#151515", skin: "#d9c2a8", top: "#2a1f33", bottom: "#151515", accent: "#5a2a6a", scar: true } },
+  docs:     { who: "Viktor", agent: "Documentalista", room: "DIARIO DEL FONDO", c: "#c8a24a", role: "Registra operaciones, ADRs y notas de aprendizaje.", state: "idle",
+             look: { style: "back", hair: "#4a3424", skin: "#e2c6a8", top: "#4a5a4a", bottom: "#2a2a2a", cane: true } },
+};
+const FLOORS = [["risk", "signals"], ["director", "docs"], ["auditor", "exec"], ["tester", "safety", "guardian"]];
+const GRAF = { tester: ["#ff3fa4", "PAPER"], safety: ["var(--down)", "STOP"], director: ["#39ff9e", "++"], guardian: ["#b14dff", "SOUL"] };
+
+/* ---------- render ---------- */
+const floors = document.getElementById("floors");
+FLOORS.forEach((row, i) => {
+  const f = document.createElement("div");
+  f.className = "floor";
+  f.innerHTML = `<div class="lbl">NIVEL ${i}</div>`;
+  row.forEach(id => {
+    const p = P[id];
+    const cls = ["room", p.state === "work" ? "work" : "", p.state === "alert" ? "alert" : "", p.state === "sleep" ? "off" : ""].join(" ");
+    const furn = ["auditor", "docs", "guardian"].includes(id)
+      ? `<div class="shelf" style="left:12px"></div><div class="desk" style="right:30px"></div><div class="screen" style="right:42px"></div>`
+      : `<div class="desk" style="left:46%"></div><div class="screen" style="left:calc(46% + 12px)"></div>`;
+    const extra = (id === "tester" ? `<div class="flask" style="left:20%"></div><div class="flask" style="left:24%;background:#3a7bff;box-shadow:0 0 8px #3a7bff"></div>` : "")
+      + (GRAF[id] ? `<div class="graffiti" style="right:10px;top:34px;color:${GRAF[id][0]};text-shadow:0 0 8px ${GRAF[id][0]}">${GRAF[id][1]}</div>` : "");
+    let spr;
+    if (p.state === "walk") spr = `<div class="dw walk" style="--a:8%;--b:70%;--t:${id === "tester" ? 4 : 7}s">${sprite(p.look)}</div>`;
+    else if (p.state === "work" || p.state === "alert") spr = `<div class="dw sit" style="left:calc(46% - 26px)">${sprite(p.look)}</div>`;
+    else spr = `<div class="dw" style="left:20%">${sprite(p.look)}</div>`;
+    const bub = p.state === "sleep" ? `<div class="bub zz" style="left:24%">z z</div>`
+              : p.bubble ? `<div class="bub ${id === "safety" ? "pink" : ""}" style="left:calc(46% - 30px)">${p.bubble}</div>` : "";
+    f.insertAdjacentHTML("beforeend",
+      `<div class="${cls}" data-id="${id}" style="--c:${p.c};--g:${p.c}26"><div class="glow"></div><div class="pipe"></div>
+       <div class="name">${p.room}</div>${furn}${extra}${spr}${bub}</div>`);
+  });
+  floors.appendChild(f);
+});
+floors.insertAdjacentHTML("beforeend", `<div class="floor"><div class="lbl">HEXCORE</div>
+  <div class="core" data-id="argos"><div class="name">HEXCORE · ARGOS</div>
+  <div class="hexcore"><div class="ring"></div><div class="ring r2"></div>${owl()}</div>
+  <div class="bub">kimi-k2.7-code · escaneando señales</div></div></div>`);
+
+/* ---------- terminal ---------- */
+const STATE = { work: "TRABAJANDO", walk: "DE RONDA", idle: "LIBRE", sleep: "DURMIENDO", alert: "¡ALERTA!" };
+const term = document.getElementById("term");
+const POSITIONS = [
+  {sym:"BTC", qty:0.42, entry:64000, mark:65230, side:"long"},
+  {sym:"ETH", qty:2.8, entry:3450, mark:3380, side:"long"},
+  {sym:"NVDA", qty:12, entry:132.4, mark:138.1, side:"long"},
+  {sym:"GLD", qty:5, entry:245.2, mark:244.8, side:"long"}
+];
+function fmtPL(pos) {
+  const v = (pos.mark - pos.entry) * pos.qty;
+  const c = v >= 0 ? "var(--chem)" : "var(--down)";
+  return `<span style="color:${c}">${v >= 0 ? "+" : ""}$${Math.abs(v).toFixed(0)}</span>`;
+}
+function show(id) {
+  document.querySelectorAll("[data-id]").forEach(el => el.classList.toggle("sel", el.dataset.id === id));
+  const p = id === "argos"
+    ? { who: "Argos", agent: "Hermes · el motor", role: "El motor de decisión del fondo: lee señales, pondera riesgo y emite órdenes simuladas.", state: "work" }
+    : P[id];
+  const portrait = id === "argos" ? owl().replace('class="owl"', 'width="100%" height="100%"') : sprite(p.look);
+  let acts;
+  if (id === "argos") {
+    acts = `<button class="btn">▶ /revisar-señales</button><button class="btn">✉ Resumen al buzón</button>`;
+  } else if (id === "risk") {
+    acts = `<button class="btn">☐ Ver drawdown actual</button><button class="btn">▶ Histórico de stops</button>`;
+  } else if (id === "exec") {
+    acts = `<button class="btn warn">✎ Enviar orden (pide confirmación)</button><button class="btn">▶ Últimos fills</button>`;
+  } else if (id === "safety") {
+    acts = `<button class="btn warn">✎ Aplicar stop de emergencia</button><button class="btn">▶ Ver alertas</button>`;
+  } else {
+    acts = `<button class="btn">▶ Ver detalle del agente</button><button class="btn warn">✎ Modificar asignación</button>`;
+  }
+  let body;
+  if (id === "argos") {
+    body = `<div class="stat"><span>Señales activas</span><b>3</b></div>
+            <div class="stat"><span>Confianza media</span><b>72%</b></div>
+            <div class="stat"><span>Última orden</span><b>Hace 4 min</b></div>
+            <ul><li>BTC: tendencia alcista 15m</li><li>ETH: divergencia bajista corto plazo</li><li>GLD: lateral, sin acción</li></ul>`;
+  } else if (id === "risk") {
+    body = `<div class="stat"><span>Drawdown actual</span><b>2.4%</b></div>
+            <div class="stat"><span>Stop global</span><b>8%</b></div>
+            <div class="stat"><span>Exposición neta</span><b>62%</b></div>
+            <ul><li>Ratio riesgo/beneficio medio: 1:2.3</li><li>Max concurrent long: 6</li></ul>`;
+  } else {
+    const pos = POSITIONS[Math.floor(Math.random() * POSITIONS.length)];
+    body = `<div class="stat"><span>Posición ejemplo</span><b>${pos.sym} ${pos.side.toUpperCase()}</b></div>
+            <div class="stat"><span>Tamaño</span><b>${pos.qty} @ $${pos.entry}</b></div>
+            <div class="stat"><span>Mark</span><b>$${pos.mark}</b></div>
+            <div class="stat"><span>P&L no realizado</span><b>${fmtPL(pos)}</b></div>`;
+  }
+  term.innerHTML = `
+    <div class="tabs"><span class="on">ESTADO</span><span>TABLÓN</span><span>BUZÓN</span><span>DATOS</span></div>
+    <div class="portrait">${portrait}</div>
+    <h2>${p.who.toUpperCase()}</h2>
+    <div class="alias">${p.agent}</div>
+    <div class="role">${p.role}</div>
+    <div class="stat"><span>Estado</span><b>${STATE[p.state] || "ACTIVO"}</b></div>
+    <div class="stat"><span>Última actividad</span><b>hace 12 min</b></div>
+    <div class="stat"><span>Encargos hoy</span><b>3</b></div>
+    ${body}
+    ${acts}
+    <div class="log">&gt; 09:12 signals: BTC +4% detectado<br>&gt; 09:15 risk: stop OK a 8%<br>&gt; 09:18 exec: <span style="color:var(--down)">stop en ETH @ $3 350</span><br>&gt; 09:20 argos: señales revisadas<span class="blink">_</span></div>`;
+}
+document.querySelectorAll("[data-id]").forEach(el => el.addEventListener("click", () => show(el.dataset.id)));
+renderChart();
+show("director");
+</script>
+</body>
+</html>
